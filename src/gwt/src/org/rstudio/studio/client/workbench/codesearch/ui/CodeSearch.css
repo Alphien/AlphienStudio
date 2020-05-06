@@ -1,0 +1,43 @@
+
+@external search;
+@external rstudio-themes-flat;
+
+.codeSearchWidget .search {
+   width: 145px;
+}
+
+.rstudio-themes-flat .codeSearchWidget .search {
+   top: 0px;
+}
+
+.fileImage {
+	position: relative;
+	top: 2px;
+	margin-right: 5px;
+}
+
+.itemImage {
+	position: relative;
+	top: 2px;
+	margin-left: 2px;
+	margin-right: 8px;
+	padding-top: 4px;
+	padding-bottom: 2px;
+	
+}
+
+.itemName {
+   margin-right: 7px;
+}
+
+.itemContext {
+   color: #888;
+}
+
+.codeSearchDialogMainWidget {
+	width: 250px;
+}
+
+.codeSearchDialogMainWidget .codeSearchWidget .search {
+   width: 100%;	
+}

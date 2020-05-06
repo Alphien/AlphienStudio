@@ -1,0 +1,214 @@
+# vi: set ft=cmake:
+
+#
+# CMakeGlobals.txt
+#
+# Copyright (C) 2009-19 by RStudio, Inc.
+#
+# Unless you have received this program directly from RStudio pursuant
+# to the terms of a commercial license agreement with RStudio, then
+# this program is licensed to you under the terms of version 3 of the
+# GNU Affero General Public License. This program is distributed WITHOUT
+# ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Please refer to the
+# AGPL (http://www.gnu.org/licenses/agpl-3.0.txt) for more details.
+#
+
+
+# include guard
+if(RSTUDIO_CMAKE_GLOBALS_INCLUDED)
+   return()
+endif()
+set(RSTUDIO_CMAKE_GLOBALS_INCLUDED YES)
+
+# version info
+if ("$ENV{RSTUDIO_VERSION_MAJOR}" STREQUAL "")
+  set(CPACK_PACKAGE_VERSION_MAJOR "99")
+  set(RSTUDIO_UNVERSIONED_BUILD TRUE)
+else()
+  set(CPACK_PACKAGE_VERSION_MAJOR $ENV{RSTUDIO_VERSION_MAJOR})
+endif()
+if ("$ENV{RSTUDIO_VERSION_MINOR}" STREQUAL "")
+  set(CPACK_PACKAGE_VERSION_MINOR "9")
+else()
+  set(CPACK_PACKAGE_VERSION_MINOR $ENV{RSTUDIO_VERSION_MINOR})
+endif()
+if ("$ENV{RSTUDIO_VERSION_PATCH}" STREQUAL "")
+  set(CPACK_PACKAGE_VERSION_PATCH "9")
+else()
+  set(CPACK_PACKAGE_VERSION_PATCH $ENV{RSTUDIO_VERSION_PATCH})
+endif()
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+
+set(RSTUDIO_RELEASE_NAME "Double Marigold")
+
+string(TIMESTAMP CPACK_COPYRIGHT_YEAR "%Y")
+string(TIMESTAMP CPACK_BUILD_DATE "%Y-%m-%d")
+
+# pick up suffix if present
+if(NOT "$ENV{RSTUDIO_VERSION_SUFFIX}" STREQUAL "" AND NOT "$ENV{RSTUDIO_VERSION_SUFFIX}" STREQUAL "0")
+   set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}-$ENV{RSTUDIO_VERSION_SUFFIX}")
+endif()
+
+# default to debug builds
+if(NOT CMAKE_BUILD_TYPE)
+   message(STATUS "CMake build type not set; defaulting to debug build")
+   set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+# enable testing on debug builds
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT RSTUDIO_UNIT_TESTS_DISABLED)
+  set(RSTUDIO_UNIT_TESTS_ENABLED true)
+  add_definitions(-DRSTUDIO_UNIT_TESTS_ENABLED)
+endif()
+
+# platform specific default for targets
+if(NOT RSTUDIO_TARGET)
+   set(RSTUDIO_TARGET "Development")
+   set(RSTUDIO_DEVELOPMENT TRUE)
+endif()
+
+# set desktop and server build flags
+if( NOT WIN32 AND ( (${RSTUDIO_TARGET} STREQUAL "Development") OR
+                    (${RSTUDIO_TARGET} STREQUAL "Server")) )
+   set(RSTUDIO_SERVER TRUE)
+endif()
+if( ${RSTUDIO_TARGET} STREQUAL "Development" OR ${RSTUDIO_TARGET} STREQUAL "Desktop" )
+   set(RSTUDIO_DESKTOP TRUE)
+endif()
+
+# set session32 if specified
+if(RSTUDIO_TARGET STREQUAL "SessionWin32")
+   set(RSTUDIO_SESSION_WIN32 TRUE)
+endif()
+
+# record git revision hash (cache it since we don't use this in development
+# mode and we don't want it to force rebuilds there)
+if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSTUDIO_GIT_REVISION_HASH)
+   find_program(GIT_EXECUTABLE git)
+   if(GIT_EXECUTABLE)
+      execute_process(
+         COMMAND git rev-parse HEAD
+         WORKING_DIRECTORY "${ROOT_SRC_DIR}"
+         OUTPUT_VARIABLE RSTUDIO_GIT_REVISION_HASH
+         OUTPUT_STRIP_TRAILING_WHITESPACE)
+      SET(RSTUDIO_GIT_REVISION_HASH "${RSTUDIO_GIT_REVISION_HASH}" CACHE STRING "Git Revision Hash")
+   endif()
+endif()
+
+# record these from Jenkins if available
+if("$ENV{GIT_COMMIT}" STREQUAL "")
+  string(LENGTH "${RSTUDIO_GIT_REVISION_HASH}" HASH_LENGTH)
+  if(HASH_LENGTH EQUAL 40) 
+    # use the cached revision hash if we have one
+    set(RSTUDIO_GIT_COMMIT "${RSTUDIO_GIT_REVISION_HASH}")
+  else()
+    # make one up if we don't
+    set(RSTUDIO_GIT_COMMIT "99999999999999999999999999999999")
+  endif()
+else()
+  # use the git commit from Jenkins
+  set(RSTUDIO_GIT_COMMIT $ENV{GIT_COMMIT})
+endif()
+if("$ENV{BUILD_ID}" STREQUAL "")
+  # no known build ID
+  set(RSTUDIO_BUILD_ID "unknown")
+else()
+  # use build ID from Jenkins
+  set(RSTUDIO_BUILD_ID $ENV{BUILD_ID})
+endif()
+
+# required R version
+set(RSTUDIO_R_MAJOR_VERSION_REQUIRED 3)
+set(RSTUDIO_R_MINOR_VERSION_REQUIRED 0)
+set(RSTUDIO_R_PATCH_VERSION_REQUIRED 1)
+
+# allow opting out of version checking (for building on older distros)
+if(NOT DEFINED RSTUDIO_VERIFY_R_VERSION)
+   if(RSTUDIO_PACKAGE_BUILD)
+      set(RSTUDIO_VERIFY_R_VERSION FALSE)
+   else()
+      set(RSTUDIO_VERIFY_R_VERSION TRUE)
+   endif()
+endif()
+
+# install freedesktop integration files if we are installing into /usr
+if(NOT DEFINED RSTUDIO_INSTALL_FREEDESKTOP)
+   if(${CMAKE_INSTALL_PREFIX} MATCHES "/usr/.*")
+      set(RSTUDIO_INSTALL_WITH_PRIV TRUE)
+   else()
+      set(RSTUDIO_INSTALL_WITH_PRIV FALSE)
+   endif()
+   if(RSTUDIO_INSTALL_WITH_PRIV AND UNIX AND NOT APPLE)
+      set(RSTUDIO_INSTALL_FREEDESKTOP TRUE)
+   else()
+      set(RSTUDIO_INSTALL_FREEDESKTOP FALSE)
+   endif()
+endif()
+
+# cmake modules (compute path relative to this file)
+get_filename_component(ROOT_SRC_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
+set(CMAKE_MODULE_PATH "${ROOT_SRC_DIR}/cmake/modules/")
+
+# dependencies
+if(WIN32)
+   set(RSTUDIO_WINDOWS_DEPENDENCIES_DIR "${ROOT_SRC_DIR}/dependencies/windows")
+else()
+   # look for system-wide (global) dependencies folder
+   if(EXISTS "/opt/rstudio-tools/dependencies")
+      set(RSTUDIO_DEPENDENCIES_DIR "/opt/rstudio-tools/dependencies")
+   endif()
+endif()
+
+# look for dependencies in the source folder if not installed globally
+if(NOT EXISTS "${RSTUDIO_DEPENDENCIES_DIR}")
+   set(RSTUDIO_DEPENDENCIES_DIR "${ROOT_SRC_DIR}/dependencies")
+endif()
+
+# special install directories for apple desktop
+if (APPLE AND RSTUDIO_DESKTOP)
+   set(RSTUDIO_INSTALL_BIN RStudio.app/Contents/MacOS)
+   set(RSTUDIO_INSTALL_SUPPORTING RStudio.app/Contents/Resources)
+else()
+   if (RSTUDIO_SESSION_WIN32)
+     set(RSTUDIO_INSTALL_BIN x86)
+   else()
+     set(RSTUDIO_INSTALL_BIN bin)
+   endif()
+   set(RSTUDIO_INSTALL_SUPPORTING .)
+endif()
+
+# if the install prefix is /usr/local then tweak as appropriate
+if(UNIX)
+   if(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
+      if(APPLE AND RSTUDIO_DESKTOP)
+         set(CMAKE_INSTALL_PREFIX "/Applications")
+      else()
+         if(RSTUDIO_DESKTOP)
+            set(CMAKE_INSTALL_PREFIX "/usr/local/lib/rstudio")
+         else()
+            set(CMAKE_INSTALL_PREFIX "/usr/local/lib/rstudio-server")
+         endif()
+      endif()
+   endif()
+endif()
+
+# detect lsb release
+if (UNIX AND NOT APPLE)
+   if(NOT RSTUDIO_LSB_RELEASE)
+      execute_process(COMMAND /usr/bin/lsb_release "--id" "--short"
+                      OUTPUT_VARIABLE RSTUDIO_LSB_RELEASE)
+      if (RSTUDIO_LSB_RELEASE)
+         string(STRIP ${RSTUDIO_LSB_RELEASE} RSTUDIO_LSB_RELEASE)
+         string(TOLOWER  ${RSTUDIO_LSB_RELEASE} RSTUDIO_LSB_RELEASE)
+         set(RSTUDIO_LSB_RELEASE ${RSTUDIO_LSB_RELEASE} CACHE STRING "LSB release")
+         message(STATUS "LSB release: ${RSTUDIO_LSB_RELEASE}")
+      endif()
+   endif()
+endif()
+
+# make sure the CMAKE_INSTALL_PREFIX uses a cmake style path
+file(TO_CMAKE_PATH "${CMAKE_INSTALL_PREFIX}" CMAKE_INSTALL_PREFIX)
+
+# include utilities
+include(RStudioCMakeUtils)

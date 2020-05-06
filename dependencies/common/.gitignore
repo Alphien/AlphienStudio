@@ -1,0 +1,17 @@
+dictionaries/
+mathjax*/
+overlay/
+CEF/
+node-webkit/
+pandoc/
+libclang/
+packrat/
+r2d3/*
+rmarkdown/
+shinyapps/
+rsconnect/
+profvis/
+*.tar.bz
+*.tar.bz2
+*.tar.gz
+plumber/

@@ -1,0 +1,61 @@
+
+@external gwt-CheckBox;
+
+.panelContainer {
+   width: 570px;
+   height: 500px;
+}
+
+.sshKeyWidget {
+   margin-top: 20px;
+}
+
+.usingVcsHelp {
+   margin-top: 30px;
+}
+
+.newSection {
+   margin-top: 25px;	
+}
+
+.alwaysCompletePanel {
+   margin-bottom: 11px;
+}
+
+.paneLayoutTable td.paneLayoutTable {
+   background-color: white;
+   height: 200px;
+   vertical-align: top;
+   padding-top: 0px;
+   -moz-border-radius: 6px;
+   -webkit-border-radius: 6px;
+   border-radius: 6px;
+}
+
+.paneLayoutTable .gwt-CheckBox {
+   display: block;
+   margin: 0 0 0 8px;
+   max-height: 18px;
+   font-size: 11px;
+}
+
+.paneLayoutTable select {
+   width: 195px;
+   margin-bottom: 5px;
+}
+
+.themeChooser select {
+   width: 148px;
+   overflow-x: hidden;
+   overflow-y: scroll;
+}
+
+.themeInfobar {
+   border: solid 1px #ccc;
+   border-bottom: none;
+   display: none;
+}
+
+.themeInfobarShowing {
+   display: block;
+}

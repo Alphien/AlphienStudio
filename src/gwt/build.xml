@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+#
+# build.xml
+#
+# Copyright (C) 2009-17 by RStudio, Inc.
+#
+# This program is licensed to you under the terms of version 3 of the
+# GNU Affero General Public License. This program is distributed WITHOUT
+# ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Please refer to the
+# AGPL (http://www.gnu.org/licenses/agpl-3.0.txt) for more details.
+#
+-->
+
+<project name="client" default="build" basedir=".">
+
+   <!-- configure dirs -->
+   <property name="src.dir" value="./src"/>        <!-- main Java sources -->
+   <property name="test.dir" value="./test"/>      <!-- Java sources for tests -->
+   <property name="www.dir" value="./www"/>        <!-- output folder for www artifacts (HTML, etc.) -->
+   <property name="build.dir" value="./bin"/>      <!-- output folder for compiled classes -->
+   <property name="lib.dir" value="./lib"/>        <!-- libraries (GWT, GIN, etc. -->
+   <property name="tools.dir" value="./tools"/>    <!-- other tools -->
+   <property name="extras.dir" value="./extras"/>  <!-- extras: symbol maps, etc. -->
+
+   <taskdef name="jscomp"
+            classname="com.google.javascript.jscomp.ant.CompileTask"
+            classpath="${tools.dir}/compiler/compiler.jar"/>
+
+   <!-- Configure path to GWT SDK -->
+   <property name="gwt.sdk" value="${lib.dir}/gwt/2.8.1"/>
+
+   <property name="gwt.extra.args" value=""/>
+   <property name="gwt.main.module" value="org.rstudio.studio.RStudio"/>
+   <property name="ace.bin" value="${src.dir}/org/rstudio/studio/client/workbench/views/source/editors/text/ace"/>
+
+   <path id="project.class.path">
+     <pathelement location="${build.dir}"/>
+      <fileset dir="${gwt.sdk}" includes="*.jar"/>
+      <fileset dir="${lib.dir}/gin/2.1.2" includes="*.jar"/>
+   </path>
+
+   <path id="test.class.path">
+      <pathelement location="{build.dir}"/>
+   </path>
+
+   <path id="unittest.class.path">
+       <fileset dir="${lib.dir}/" includes="*.jar"/>
+   </path>
+
+   <fileset id="acesupport.sources.fileset" dir="${src.dir}/../acesupport">
+      <include name="**/*.js"/>
+      <exclude name="extern.js"/>
+   </fileset>
+
+   <path id="acesupport.sources">
+      <fileset refid="acesupport.sources.fileset"/>
+   </path>
+
+   <target name="ext">
+      <jscomp compilationLevel="simple" warning="default"
+              debug="false" output="${ace.bin}/acesupport.js">
+              
+          <externs dir="${src.dir}/../acesupport">
+             <file name="extern.js"/>
+          </externs>
+
+          <path refid="acesupport.sources"/>
+
+      </jscomp>
+   </target>
+
+   <target name="acesupport" description="Compile (debugging) Ace support">
+      <concat destfile="${ace.bin}/acesupport.js">
+         <fileset refid="acesupport.sources.fileset"/>
+      </concat>
+      <echo>Concatenated acesupport files to 'acesupport.js'</echo>
+   </target>
+
+   <target name="javac" description="Compile java source">
+      <mkdir dir="${build.dir}"/>
+      <!-- Compile com.google stuff separately from org.rstudio stuff since
+         theirs have lots of deprecation warnings we can't do anything about -->
+      <javac srcdir="${src.dir}" includes="com/google/**" encoding="utf-8"
+             destdir="${build.dir}"
+             source="1.8" target="1.8" nowarn="true" deprecation="false"
+             debug="true" debuglevel="lines,vars,source"
+             includeantruntime="false">
+         <classpath refid="project.class.path"/>
+         <compilerarg value="-Xlint:-deprecation"/>
+      </javac>
+      <javac srcdir="${src.dir}" includes="org/rstudio/**" encoding="utf-8"
+             destdir="${build.dir}"
+             source="1.8" target="1.8" nowarn="true" deprecation="true"
+             debug="true" debuglevel="lines,vars,source"
+             includeantruntime="false"
+             fork="true">
+         <classpath refid="project.class.path"/>
+         <compilerarg value="-Xlint"/>
+         <compilerarg value="-J-Xms256m"/>
+         <compilerarg value="-J-Xmx512m"/>
+      </javac>
+      <copy todir="${build.dir}">
+         <fileset dir="${src.dir}" excludes="**/*.java"/>
+      </copy>
+   </target>
+
+   <target name="gwtc" depends="ext,javac" description="GWT compile to JavaScript">
+      <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+         <classpath>
+            <pathelement location="${src.dir}"/>
+            <path refid="project.class.path"/>
+         </classpath>
+         <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+         <jvmarg value="-Xmx1536M"/>
+         <arg value="-war"/>
+         <arg value="${www.dir}"/>
+         <arg value="-localWorkers"/>
+         <arg value="2"/>
+         <arg value="-XdisableClassMetadata"/>
+         <arg value="-XdisableCastChecking"/>
+         <arg line="-strict"/>
+         <arg line="-gen gen"/>
+         <!--<arg line="-style PRETTY"/>-->
+         <arg line="-extra ${extras.dir}"/>
+         <arg line="${gwt.extra.args}"/>
+         <arg value="-generateJsInteropExports"/>
+         <!-- Additional arguments like -logLevel DEBUG -->
+         <arg value="${gwt.main.module}"/>
+      </java>
+   </target>
+
+   <target name="soyc" description="Generate and show SOYC report">
+      <antcall target="gwtc">
+         <param name="gwt.main.module" value="org.rstudio.studio.RStudioDraft"/>
+         <param name="gwt.extra.args" value="${gwt.extra.args} -compileReport"/>
+      </antcall>
+      <exec executable="open" os="Mac OS X">
+         <arg file="${extras.dir}/rstudio/soycReport/compile-report/index.html"/>
+      </exec>
+   </target>
+
+   <target name="draft" description="Compile using GWT's draft mode">
+      <antcall target="gwtc">
+         <param name="gwt.main.module" value="org.rstudio.studio.RStudioDraft"/>
+         <param name="gwt.extra.args" value="${gwt.extra.args} -draftCompile -Xnamespace NONE" />
+      </antcall>
+   </target>
+
+   <target name="desktop" depends="acesupport,javac" description="Run development mode">
+      <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+         <classpath>
+            <pathelement location="${src.dir}"/>
+            <path refid="project.class.path"/>
+         </classpath>
+         <jvmarg value="-Xmx2048M"/>
+         <arg value="-style"/>
+         <arg value="PRETTY"/>
+         <arg value="-XmethodNameDisplayMode"/>
+         <arg value="ABBREVIATED"/>
+         <arg value="-war"/>
+         <arg value="${www.dir}"/>
+         <arg value="-noserver"/>
+         <arg value="-startupUrl"/>
+         <arg value="http://localhost:8787"/>
+         <arg line="-bindAddress 127.0.0.1"/>
+         <arg value="-generateJsInteropExports"/>
+         <arg value="org.rstudio.studio.RStudioDesktopSuperDevMode"/>
+      </java>
+   </target>
+	
+   <target name="devmode" depends="acesupport,javac" description="Run development mode">
+      <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+         <classpath>
+            <pathelement location="src"/>
+            <path refid="project.class.path"/>
+         </classpath>
+         <jvmarg value="-Xmx2048M"/>
+         <arg value="-style"/>
+         <arg value="PRETTY"/>
+         <arg value="-XmethodNameDisplayMode"/>
+         <arg value="ABBREVIATED"/>
+         <arg value="-war"/>
+         <arg value="${www.dir}"/>
+         <arg value="-noserver"/>
+         <arg value="-startupUrl"/>
+         <arg value="http://localhost:8787"/>
+         <arg line="-bindAddress 127.0.0.1"/>
+         <arg value="-generateJsInteropExports"/>
+         <!-- Additional arguments like -logLevel DEBUG -->
+         <arg value="org.rstudio.studio.RStudioSuperDevMode"/>
+      </java>
+   </target>
+
+   <target name="superdevmode" description="Run super dev mode">
+   	<antcall target="gwtc">
+          <param name="gwt.main.module" value="org.rstudio.studio.RStudioSuperDevMode"/>
+   	</antcall>
+      <java failonerror="true" fork="true" classname="com.google.gwt.dev.codeserver.CodeServer">
+         <classpath>
+            <pathelement location="src"/>
+            <path refid="project.class.path"/>
+         </classpath>
+         <jvmarg value="-Xmx2048M"/>
+      	<arg value="-src"/>
+      	<arg value = "src"/>
+        <arg value="org.rstudio.studio.RStudioSuperDevMode"/>
+      </java>
+   </target>
+
+   <target name="build" depends="gwtc" description="Build this project" />
+
+   <target name="clean" description="Cleans this project">
+      <delete dir="${build.dir}" failonerror="false" />
+      <delete dir="gwt-unitCache" failonerror="false" />
+      <delete dir="${www.dir}/rstudio" failonerror="false" />
+      <delete file="${ace.bin}/acesupport.js" failonerror="false" />
+      <delete dir="gen" failonerror="false" />
+      <delete dir="${extras.dir}" failonerror="false" />
+   </target>
+
+   <target name="build-unittests" description="Builds JUnit unit tests">
+       <javac srcdir="test" includes="org/rstudio/**/client/**" encoding="utf-8"
+             destdir="${build.dir}"
+             source="1.8" target="1.8" nowarn="true" deprecation="true"
+             debug="true" debuglevel="lines,vars,source"
+             includeantruntime="false">
+         <classpath refid="unittest.class.path"/>
+         <classpath refid="project.class.path"/>
+      </javac>
+   </target>
+
+   <target name="unittest" description="Runs JUnit unit tests" depends="build-unittests">
+     <java failonerror="true" fork="true" classname="org.junit.runner.JUnitCore">
+        <classpath>
+            <pathelement location="${test.dir}"/>
+            <pathelement location="${src.dir}"/>
+        </classpath>
+        <classpath refid="project.class.path"/>
+        <classpath refid="unittest.class.path"/>
+        <arg value="org.rstudio.studio.client.RStudioUnitTestSuite"/>
+     </java>
+   </target>
+</project>

@@ -1,0 +1,88 @@
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java	2019-03-19 14:21:46.255427967 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java	2019-06-07 14:29:09.300262702 +0800
+@@ -2,7 +2,7 @@
+  *
+  * AboutAlphienDialogContents.java
+  *
+- * AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS
++ * AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS
+  * This program is a free software: you can redistribute it and/or modify 
+  * it under the terms of the GNU Affero General Public License version 3 
+  * as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). 
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml	2019-03-19 14:21:46.255427967 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml	2019-06-07 14:30:25.927494336 +0800
+@@ -2,7 +2,7 @@
+  -
+  - AboutAlphienDialogContents.ui.xml
+  -
+- - AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS
++ - AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS
+  - This program is a free software: you can redistribute it and/or modify 
+  - it under the terms of the GNU Affero General Public License version 3 
+  - as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). 
+@@ -77,7 +77,7 @@
+                      height="48"/>
+ 				<g:Label text="AlphienStudio" styleName="{style.productName}"></g:Label>
+ 				<g:HTMLPanel styleName="{style.productVersion}">
+-					<g:InlineLabel text="Version 1.0.3"></g:InlineLabel>
++					<g:InlineLabel text="Version 1.2.0"></g:InlineLabel>
+ 					<!-- <g:InlineLabel ui:field="versionLabel"></g:InlineLabel> -->
+ 					<g:InlineLabel text="&ndash; &copy; 2018-2018 AlphienStudio"></g:InlineLabel>
+ 				</g:HTMLPanel>
+@@ -90,7 +90,7 @@
+ 			text="AlphienStudio is a customized version of RStudio that has been tailored towards Alphien Users."></g:InlineLabel>
+ 		<br />
+ 		<g:InlineLabel
+-			text="AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS"></g:InlineLabel>
++			text="AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS"></g:InlineLabel>
+ 		<br />
+  		<g:InlineLabel
+ 			text="This program is a free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License version 3 as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). To request a copy of the software, please contact info@alphien.com."></g:InlineLabel>
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java	2019-03-19 14:21:46.255427967 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java	2019-06-07 14:30:50.399248461 +0800
+@@ -2,7 +2,7 @@
+  *
+  * AboutAlphienDialog.java
+  *
+- * AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS
++ * AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS
+  * This program is a free software: you can redistribute it and/or modify 
+  * it under the terms of the GNU Affero General Public License version 3 
+  * as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). 
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml	2019-03-19 14:21:46.295427659 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml	2019-06-11 17:45:10.317685710 +0800
+@@ -1904,12 +1904,12 @@
+         desc="Move selected files or folders"
+         rebindable="false"/>
+         
+-   <cmd id="exportFiles"
++   <!-- <cmd id="exportFiles"
+         label="Export Files..."
+         menuLabel="Export..."
+         buttonLabel="Export"
+         desc="Export selected files or folders"
+-        rebindable="false"/>
++        rebindable="false"/> -->
+        
+    <cmd id="renameFile"
+         label="Rename Current File..."
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java	2019-03-19 14:21:46.323427445 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java	2019-03-19 14:42:26.038760657 +0800
+@@ -45,9 +45,9 @@
+       moreMenu.addItem(commands.copyFile().createMenuItem(false));
+       moreMenu.addItem(commands.copyFileTo().createMenuItem(false));
+       moreMenu.addItem(commands.moveFiles().createMenuItem(false));
+-      moreMenu.addSeparator();
+-      moreMenu.addItem(commands.exportFiles().createMenuItem(false));
+-      moreMenu.addSeparator();
++      // moreMenu.addSeparator();
++      // moreMenu.addItem(commands.exportFiles().createMenuItem(false));
++      // moreMenu.addSeparator();
+       moreMenu.addItem(commands.setAsWorkingDir().createMenuItem(false));
+       moreMenu.addItem(commands.goToWorkingDir().createMenuItem(false));
+       moreMenu.addSeparator();

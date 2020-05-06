@@ -1,0 +1,41 @@
+@external rstudio-themes-flat, rstudio-themes-dark;
+
+.captionLabel {
+   font-weight: bold;
+   color: #494949;
+}
+
+.rstudio-themes-flat .rstudio-themes-dark .captionLabel {
+   color: #FFF;
+}
+
+.menuElement {
+   cursor: default;
+}
+
+.functionName {
+   margin-left: 7px;
+   padding-right: 7px;
+}
+
+.functionNamespace {
+   color: #888;
+   padding-right: 6px;
+}
+
+.rstudio-themes-flat .rstudio-themes-dark .functionNamespace {
+   color: #DDD;
+}
+
+.dropDownImage {
+   margin-bottom: 2px;
+}
+
+.rstudio-themes-flat .rstudio-themes-dark .dropDownImage {
+   filter: invert(100%) brightness(90%) saturate(90%);
+}
+
+.readOnly {
+   margin-right: 7px;
+   color: #888;
+}

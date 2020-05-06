@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -e
+
+PACKAGE_DIR=`pwd`
+
+BUILD_DIR=$(pwd)/build
+
+# find package source folder
+PKG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ "$1" == "clean" ]
+then
+   # remove existing build dir
+   rm -rf "$BUILD_DIR"
+   
+   # clean out ant build if
+   if [ -d "../../src/gwt" ]; then
+      cd ../../src/gwt
+      ant clean
+   fi
+   cd $PACKAGE_DIR
+fi
+
+mkdir -p $BUILD_DIR/gwt
+cd $BUILD_DIR
+rm -f CMakeCache.txt
+rm -rf build/_CPack_Packages
+
+cmake -DRSTUDIO_TARGET=Desktop \
+      -DCMAKE_OSX_DEPLOYMENT_TARGET="10.12" \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DRSTUDIO_PACKAGE_BUILD=1 \
+      -DGWT_BIN_DIR="$BUILD_DIR/gwt/bin" \
+      -DGWT_WWW_DIR="$BUILD_DIR/gwt/www" \
+      -DGWT_EXTRAS_DIR="$BUILD_DIR/gwt/extras" \
+      $PKG_DIR/../..
+
+# don't use all CPUs for now (hangs build machine)
+#
+# MAKEFLAGS="$MAKEFLAGS -j$(sysctl -n hw.ncpu)"
+MAKEFLAGS="$MAKEFLAGS -j2"
+
+echo "Building with flags $MAKEFLAGS..."
+make $MAKEFLAGS
+
+cpack -G DragNDrop
+
+cd $PACKAGE_DIR

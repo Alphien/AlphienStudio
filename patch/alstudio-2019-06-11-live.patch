@@ -1,0 +1,549 @@
+diff -Naur rstudio-1.1.453-Orig/src/cpp/server/auth/ServerSecureCookie.cpp rstudio-1.1.453/src/cpp/server/auth/ServerSecureCookie.cpp
+--- rstudio-1.1.453-Orig/src/cpp/server/auth/ServerSecureCookie.cpp	2019-03-19 14:21:46.171428613 +0800
++++ rstudio-1.1.453/src/cpp/server/auth/ServerSecureCookie.cpp	2019-06-06 14:57:27.078194460 +0800
+@@ -100,7 +100,7 @@
+                        name,
+                        signedCookieValue,
+                        path,
+-                       true, // HTTP only
++                       false, // HTTP only
+                        // secure if delivered via SSL
+                        options().getOverlayOption("ssl-enabled") == "1");
+ }
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java	2019-03-19 14:21:46.255427967 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.java	2019-06-07 14:29:09.300262702 +0800
+@@ -2,7 +2,7 @@
+  *
+  * AboutAlphienDialogContents.java
+  *
+- * AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS
++ * AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS
+  * This program is a free software: you can redistribute it and/or modify 
+  * it under the terms of the GNU Affero General Public License version 3 
+  * as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). 
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml	2019-03-19 14:21:46.255427967 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialogContents.ui.xml	2019-06-07 14:30:25.927494336 +0800
+@@ -2,7 +2,7 @@
+  -
+  - AboutAlphienDialogContents.ui.xml
+  -
+- - AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS
++ - AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS
+  - This program is a free software: you can redistribute it and/or modify 
+  - it under the terms of the GNU Affero General Public License version 3 
+  - as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). 
+@@ -77,7 +77,7 @@
+                      height="48"/>
+ 				<g:Label text="AlphienStudio" styleName="{style.productName}"></g:Label>
+ 				<g:HTMLPanel styleName="{style.productVersion}">
+-					<g:InlineLabel text="Version 1.0.3"></g:InlineLabel>
++					<g:InlineLabel text="Version 1.2.0"></g:InlineLabel>
+ 					<!-- <g:InlineLabel ui:field="versionLabel"></g:InlineLabel> -->
+ 					<g:InlineLabel text="&ndash; &copy; 2018-2018 AlphienStudio"></g:InlineLabel>
+ 				</g:HTMLPanel>
+@@ -90,7 +90,7 @@
+ 			text="AlphienStudio is a customized version of RStudio that has been tailored towards Alphien Users."></g:InlineLabel>
+ 		<br />
+ 		<g:InlineLabel
+-			text="AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS"></g:InlineLabel>
++			text="AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS"></g:InlineLabel>
+ 		<br />
+  		<g:InlineLabel
+ 			text="This program is a free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License version 3 as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). To request a copy of the software, please contact info@alphien.com."></g:InlineLabel>
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java	2019-03-19 14:21:46.255427967 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/application/ui/AboutAlphienDialog.java	2019-06-07 14:30:50.399248461 +0800
+@@ -2,7 +2,7 @@
+  *
+  * AboutAlphienDialog.java
+  *
+- * AlphienStudio Version 1.0.3 Copyright (C) Alphien SAS
++ * AlphienStudio Version 1.2.0 Copyright (C) Alphien SAS
+  * This program is a free software: you can redistribute it and/or modify 
+  * it under the terms of the GNU Affero General Public License version 3 
+  * as published by the Free Software Foundation (https://www.gnu.org/licenses/agpl-3.0.html). 
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml	2019-03-19 14:21:46.295427659 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/commands/Commands.cmd.xml	2019-06-11 17:45:10.317685710 +0800
+@@ -1904,12 +1904,12 @@
+         desc="Move selected files or folders"
+         rebindable="false"/>
+         
+-   <cmd id="exportFiles"
++   <!-- <cmd id="exportFiles"
+         label="Export Files..."
+         menuLabel="Export..."
+         buttonLabel="Export"
+         desc="Export selected files or folders"
+-        rebindable="false"/>
++        rebindable="false"/> -->
+        
+    <cmd id="renameFile"
+         label="Rename Current File..."
+diff -Naur rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java
+--- rstudio-1.1.453-Orig/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java	2019-03-19 14:21:46.323427445 +0800
++++ rstudio-1.1.453/src/gwt/src/org/rstudio/studio/client/workbench/views/files/ui/FileCommandToolbar.java	2019-03-19 14:42:26.038760657 +0800
+@@ -45,9 +45,9 @@
+       moreMenu.addItem(commands.copyFile().createMenuItem(false));
+       moreMenu.addItem(commands.copyFileTo().createMenuItem(false));
+       moreMenu.addItem(commands.moveFiles().createMenuItem(false));
+-      moreMenu.addSeparator();
+-      moreMenu.addItem(commands.exportFiles().createMenuItem(false));
+-      moreMenu.addSeparator();
++      // moreMenu.addSeparator();
++      // moreMenu.addItem(commands.exportFiles().createMenuItem(false));
++      // moreMenu.addSeparator();
+       moreMenu.addItem(commands.setAsWorkingDir().createMenuItem(false));
+       moreMenu.addItem(commands.goToWorkingDir().createMenuItem(false));
+       moreMenu.addSeparator();
+diff -Naur rstudio-1.1.453-Orig/src/gwt/www/index.htm rstudio-1.1.453/src/gwt/www/index.htm
+--- rstudio-1.1.453-Orig/src/gwt/www/index.htm	2019-03-19 14:21:46.407426798 +0800
++++ rstudio-1.1.453/src/gwt/www/index.htm	2019-06-07 14:24:42.118918555 +0800
+@@ -24,10 +24,41 @@
+     <title>AlphienStudio</title>
+     #!head_tags#
+     <script type="text/javascript" language="javascript" src="#!gwt_prefix#rstudio/rstudio.nocache.js"></script>
+-  
++    <script type="text/javascript">
++      function getCookie (cname) {
++        var name = cname + "=";
++        var decodedCookie = decodeURIComponent(document.cookie);
++        var ca = decodedCookie.split(';');
++        for(var i = 0; i <ca.length; i++) {
++          var c = ca[i];
++          while (c.charAt(0) == ' ') {
++                c = c.substring(1);
++          }
++          if (c.indexOf(name) == 0) {
++                return c.substring(name.length, c.length);
++          }
++        }
++        return "";
++      }
++      var delete_cookie = function(name) {
++          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
++      };
++      function onKeyPress() {    
++        if (!getCookie('studioalcookie')) {
++          delete_cookie('csrf-token');
++          delete_cookie('user-id');
++        }
++      }
++      function onMouseMove() {
++        if (!getCookie('studioalcookie')) {
++          delete_cookie('csrf-token');
++          delete_cookie('user-id');
++        }
++      }
++    </script>
+   </head>
+                                      
+-  <body>
++  <body onmousemove="onMouseMove()" onkeypress="onKeyPress()">
+   </body>
+ 
+ </html>
+diff -Naur rstudio-1.1.453-Orig/src/gwt/www/templates/encrypted-sign-in.htm rstudio-1.1.453/src/gwt/www/templates/encrypted-sign-in.htm
+--- rstudio-1.1.453-Orig/src/gwt/www/templates/encrypted-sign-in.htm	2019-03-19 14:21:46.411426768 +0800
++++ rstudio-1.1.453/src/gwt/www/templates/encrypted-sign-in.htm	2019-06-11 17:13:09.305325044 +0800
+@@ -1,5 +1,5 @@
+ <!DOCTYPE html>
+-
++<meta charset="utf-8"/>
+ <!--
+ #
+ # encrypted-sign-in.htm
+@@ -20,209 +20,209 @@
+ 
+ <title>AlphienStudio Sign In</title>
+ <link rel="shortcut icon" href="images/favicon.ico" />
+-
+-<script language='javascript'>
+-function verifyMe()
+-{
+-   if(document.getElementById('username').value=='')
+-   {
+-      alert('You must enter a username');
+-      document.getElementById('username').focus();
+-      return false;
+-   }
+-   if(document.getElementById('password').value=='')
+-   {
+-      alert('You must enter a password');
+-      document.getElementById('password').focus();
+-      return false;
+-   }
+-   return true;
+-}
+-</script>
+-
+ <link rel="stylesheet" href="rstudio.css" type="text/css"/>
+-
+ <style type="text/css">
++   .loader {
++      position: relative;
++      width: 25px;
++      height: 25px;
++      -webkit-animation: crabbly_spinner infinite .75s linear;
++      -moz-animation: crabbly_spinner infinite .75s linear;
++         -o-animation: crabbly_spinner infinite .75s linear;
++               animation: crabbly_spinner infinite .75s linear;
++      border: 2px solid #35d4bc;
++      border-top-color: rgba(0, 0, 0, .1);
++      border-right-color: rgba(0, 0, 0, .1);
++      border-bottom-color: rgba(0, 0, 0, .1);
++      border-radius: 100%;
++    }
++
++   @keyframes crabbly_spinner {
++      from {
++         transform: rotate(0deg);
++      }
++      to {
++         transform: rotate(360deg);
++      }
++   }
++   .outer {
++      display: table;
++      position: absolute;
++      top: 0;
++      left: 0;
++      height: 100%;
++      width: 100%;
++   }
+ 
+-body, td {
+-   font-size: 12px;
+-}
+-
+-#caption {
+-  text-align: center;
+-  font-size: 14px;
+-  margin-right: 0;
+-  width: 100%;
+-}
+-
+-input[type=text], input[type=password] {
+-  width: 262px;
+-  border: 1px solid #aaa;
+-  font-size: 14px;
+-  padding: 3px;
+-  -moz-border-radius: 4px;
+-  -webkit-border-radius: 4px;
+-  outline: none;
+-}
+-
+-#buttonpanel {
+-  text-align: center;
+-  margin-top: 12px;
+-}
+-#errorpanel {
+-  text-align: center;
+-  padding: 0 25% 0 25%;
+-  color: red;
+-  display: #errorDisplay#;
+-  font-weight: bold;
+-}
+-button.fancy {
+-  padding: 0;
+-  border: 0 none;
+-  margin: 0;
+-  outline: none;
+-  cursor: pointer;
+-  background-color: white;
+-}
+-button.fancy .left {
+-  width: 11px;
+-  height: 35px;
+-  background: url(images/buttonLeft.png) center right no-repeat;
+-}
+-button.fancy .inner {
+-  color: white;
+-  font-weight: bold;
+-  font-size: 13px;
+-  background: url(images/buttonTile.png) center repeat-x;
+-  height: 35px;
+-  padding: 5px;
+-  padding-top: 1px;
+-}
+-button.fancy .right {
+-  width: 11px;
+-  height: 35px;
+-  background: url(images/buttonRight.png) center left no-repeat;
+-}
++   .middle {
++      display: table-cell;
++      vertical-align: middle;
++   }
++
++   .inner {
++      margin-left: auto;
++      margin-right: auto;
++      width: 400px;
++      /*whatever width you want*/
++   }
++   #errorpanel {
++      text-align: center;
++      padding: 0 25% 0 25%;
++      color: red;
++      display: #errorDisplay#;
++      font-weight: bold;
++   }
+ </style>
+ 
+ <script type="text/javascript" src="js/encrypt.min.js"></script>
+-<script type="text/javascript">
+-function prepare() {
+-   if (!verifyMe())
+-      return false;
+-   try {
+-      var payload = document.getElementById('username').value + "\n" +
+-                    document.getElementById('password').value;
+-      var xhr = new XMLHttpRequest();
+-      xhr.open("GET", "#'publicKeyUrl#", true);
+-      xhr.onreadystatechange = function() {
+-         try {
+-            if (xhr.readyState == 4) {
+-               if (xhr.status != 200) {
+-                  var errorMessage;
+-                  if (xhr.status == 0)
+-                     errorMessage = "Error: Could not reach server--check your internet connection";
+-                  else
+-                     errorMessage = "Error: " + xhr.statusText;
+-                     
+-                  var errorDiv = document.getElementById('errorpanel');
+-                  errorDiv.innerHTML = '';
+-                  var errorp = document.createElement('p');
+-                  errorDiv.appendChild(errorp);
+-                  if (typeof(errorp.innerText) == 'undefined')
+-                     errorp.textContent = errorMessage;
+-                  else
+-                     errorp.innerText = errorMessage;
+-                  errorDiv.style.display = 'block';
+-               }
+-               else {
+-                  var response = xhr.responseText;
+-                  var chunks = response.split(':', 2);
+-                  var exp = chunks[0];
+-                  var mod = chunks[1];
+-                  var encrypted = encrypt(payload, exp, mod);
+-                  document.getElementById('persist').value = document.getElementById('staySignedIn').checked ? "1" : "0";
+-                  document.getElementById('package').value = encrypted;
+-                  document.getElementById('clientPath').value = window.location.pathname;
+-                  document.realform.submit();
++<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
++<script>
++   function myTimer() {
++        if (document.getElementById('realform').value != '') {
++            document.getElementById('loader').style.display ='none' 
++        }
++    }
++   function getCookie (cname) {
++      var name = cname + "=";
++      var decodedCookie = decodeURIComponent(document.cookie);
++      var ca = decodedCookie.split(';');
++      for(var i = 0; i <ca.length; i++) {
++         var c = ca[i];
++         while (c.charAt(0) == ' ') {
++               c = c.substring(1);
++         }
++         if (c.indexOf(name) == 0) {
++               return c.substring(name.length, c.length);
++         }
++      }
++      return "";
++   }
++   function setAlCookie (name, value, days) {
++      // variable
++      var domain, domainParts, date, expires, host;
++      // set day
++      if (days){
++         date = new Date();
++         date.setTime(date.getTime()+(days*24*60*60*1000));
++         expires = "; expires="+date.toGMTString();
++      } else {
++         expires = "";
++      }
++      // check host
++      host = location.host;
++      if (host.split('.').length === 1) {
++         // no "." in a domain - it's localhost or something similar
++         document.cookie = name + "=" + value + expires + "; path=/";
++      } else {
++         // get parent domain
++         domainParts = host.split('.');
++         domainParts.shift();
++         domain = '.' + domainParts.join('.');
++         // try add to parent
++         document.cookie = name + "=" + value + expires + "; path=/; domain=" + domain;
++         // check parent cookie
++         if (getCookie(name) == "" || getCookie(name) !== value) {
++            domain = '.' + host;
++            document.cookie = name+"="+value+expires+"; path=/; domain=" + domain;
++         }
++      }
++   }
++   if (!getCookie('studioalcookie')) {
++      try {
++         var xhr = new XMLHttpRequest();
++         xhr.open("GET", "#'publicKeyUrl#", true);
++         xhr.onreadystatechange = function() {
++            try {
++               if (xhr.readyState == 4) {
++                  if (xhr.status != 200) {
++                     var errorMessage;
++                     if (xhr.status == 0)
++                        errorMessage = "Error: Could not reach server--check your internet connection";
++                     else
++                        errorMessage = "Error: " + xhr.statusText;
++                  }
++                  else {
++                     var response = xhr.responseText;
++                     Cookies.set('alpublickey', response, { expires: 2, domain: '.alphien.com' });
++                  }
+                }
++            } catch (exception) {
++               alert("Error: " + exception);
+             }
+-         } catch (exception) {
+-            alert("Error: " + exception);
++         };
++         xhr.send(null);
++      } catch (exception) {
++         alert("Error: " + exception);
++      }
++   }
++   var directurl = encodeURIComponent('https://studio.alphien.com');
++   if (!getCookie('alstudioflag')) {
++      var rememberLog = getCookie('alRememberMe');
++      var persistValue = 0;
++      if (rememberLog) {
++         persistValue = 1;
++      }
++      if (!getCookie('alpublickey')) {
++         if (getCookie('alstudio1') && getCookie('alstudio2')) {
++            setTimeout(function(){
++               var getcookieflag = getCookie('ALSTUDIO');
++               var splitval = getcookieflag.split('|', 3);
++               var serverName = splitval[0];
++               var packagelogin = ''
++               if (serverName === 'studio1') {
++                  packagelogin = getCookie('alstudio1')
++               } else if (serverName === 'studio2') {
++                  packagelogin = getCookie('alstudio2')           
++               } else {
++                  packagelogin = getCookie('alstudio3')
++               }
++               document.getElementById('persist').value = persistValue;
++               document.getElementById('package').value = packagelogin;
++               document.getElementById('clientPath').value = "/auth-sign-in";
++               setAlCookie('alstudioflag', 1, 1)
++               document.realform.submit();
++            }, 3000);
++         } else {
++            window.location.replace('https://auth.alphien.com?s=' + directurl);            
+          }
+-      };
+-      xhr.send(null);
+-   } catch (exception) {
+-      alert("Error: " + exception);
+-   }
+-}
+-function submitRealForm() {
+-   if (prepare())
+-      document.realform.submit();
+-}
++      } else {
++         if (getCookie('alpstudio')) {
++            setTimeout(function(){
++               var alstudioCookies = getCookie('alpstudio');
++               document.getElementById('persist').value = persistValue;
++               document.getElementById('package').value = alstudioCookies;
++               document.getElementById('clientPath').value = "/auth-sign-in";
++               setAlCookie('alstudioflag', 1, 1)
++               document.realform.submit();
++            }, 3000);
++         } else {
++            window.location.replace('https://auth.alphien.com?s=' + directurl);
++         }
++      }
++   } else {
++      setAlCookie('alstudioflag', '', -1)
++      window.location.replace('https://auth.alphien.com?c=logout&s=' + directurl);
++   }
+ </script>
+-
+ </head>
+ 
+-<h3 id="banner"><a href="https://studio.alphien.com"><img src="images/rstudio.png" width="78" height="24" title="AlphienStudio"/></a></h3>
+-
+ <div id="errorpanel">
+ <p>Error: #errorMessage#</p>
+ </div>
+ 
+-<form method="POST" #!formAction#>
+-<table id="border" align="center">
+-  <tr>
+-    <td>
+-      <h2 id="caption">Sign in to AlphienStudio</h2>
+-      <p>
+-         <label for="username">Username:</label><br />
+-         <input type='text' 
+-                name='username' 
+-                value='' 
+-                id='username' 
+-                size='45'/><br />
+-      </p>
+-      <p>
+-         <label for="password">Password:</label><br />
+-         <input type='password' 
+-                name='password' 
+-                value='' 
+-                id='password' 
+-                size='45'
+-                autocomplete='off' /><br />
+-      </p>
+-      <p style="display: #staySignedInDisplay#;">
+-         <input type="checkbox" name="staySignedIn" id="staySignedIn" value="1"/>
+-         <label for="staySignedIn">Stay signed in</label>
+-      </p>
+-       <input type="hidden" name="appUri" value="#appUri#"/>
+-      <div id="buttonpanel"><button class="fancy" type="submit"><table cellpadding="0" cellspacing="0" border="0">
+-        <tr>
+-          <td class="left"></td>
+-          <td class="inner" valign="middle">Sign In</td>
+-          <td class="right"></td>
+-        </tr>
+-      </table></button></div>
+-    </td>
+-  </tr>
+-</table>
+-</form>
+-
+-<form action="#action#" name="realform" method="POST">
++<div class="outer">
++   <div class="middle">
++         <div class="inner" align="center">
++            <div class="loader" id="loader"></div>
++         </div>
++   </div>
++</div>
++<form action="#action#" name="realform" method="POST" id="realform">
+    <input type="hidden" name="persist" id="persist" value=""/>
+    <input type="hidden" name="appUri" value="#appUri#"/>
+    <input type="hidden" name="clientPath" id="clientPath" value=""/>
+    <input id="package" type="hidden" name="v" value=""/>
+ </form>
+ 
+-<div id="login-html">
+-#!loginPageHtml#
+-</div>
+-
+-
+-<script type="text/javascript">
+-document.getElementById('username').focus();
+-</script>
+ </body>
+ </html>

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -e
+
+# Get the xterm.js repo and checkout specific commit
+if [ ! -d "./xterm.js" ]; then
+    git clone git@github.com:rstudio/xterm.js.git xterm.js
+fi
+
+cd xterm.js
+git clean -dfx
+
+# xterm version 2.9.2; with RStudio patches
+git checkout fd873c86
+
+XTERM_DIST_DIR=./dist
+XTERM_ADDONS_DIR=./dist/addons
+XTERM_TARGET_DIR=../../src/org/rstudio/studio/client/workbench/views/terminal/xterm
+
+# stylesheet
+cp ${XTERM_DIST_DIR}/xterm.css ${XTERM_TARGET_DIR}/xterm-orig.css
+
+# uncompressed js
+cp ${XTERM_DIST_DIR}/xterm.js ${XTERM_TARGET_DIR}/xterm-uncompressed.js
+cp ${XTERM_ADDONS_DIR}/fit/fit.js ${XTERM_TARGET_DIR}/fit-uncompressed.js
+
+# minified js using closure
+minify () {
+  echo "Minifying $1 to $2"
+  CC_OPTS="--compilation_level SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5"
+  java -Xmx128M -jar "../compiler/compiler.jar" $CC_OPTS --js $1 --js_output_file $2
+}
+
+minify ${XTERM_DIST_DIR}/xterm.js ${XTERM_TARGET_DIR}/xterm.js
+minify ${XTERM_ADDONS_DIR}/fit/fit.js ${XTERM_TARGET_DIR}/fit.js
+
+echo "Tweaking CSS"
+cd src
+../../tweak-xterm-css.R
+echo "xterm.css adjusted. Be sure to rebuild Ace themes if necessary (compile-themes.R)."
+echo Done!
