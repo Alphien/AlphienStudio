@@ -20,7 +20,7 @@ mkdir -pv "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 # Prepare alphien studio for server release
-cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/lib | tee AlphienStudio-config.log
+cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/lib/rstudio-server | tee AlphienStudio-config.log
 
 # Build and install
 make -j 4 | tee AlphienStudio-make.log
