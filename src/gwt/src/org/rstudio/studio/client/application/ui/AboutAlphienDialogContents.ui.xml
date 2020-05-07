@@ -77,9 +77,9 @@
                      height="48"/>
 				<g:Label text="AlphienStudio" styleName="{style.productName}"></g:Label>
 				<g:HTMLPanel styleName="{style.productVersion}">
-					<g:InlineLabel text="Version 1.0.3"></g:InlineLabel>
+					<g:InlineLabel text="Version 1.2.1"></g:InlineLabel>
 					<!-- <g:InlineLabel ui:field="versionLabel"></g:InlineLabel> -->
-					<g:InlineLabel text="&ndash; &copy; 2018-2018 AlphienStudio"></g:InlineLabel>
+					<g:InlineLabel text="&ndash; &copy; 2020 AlphienStudio"></g:InlineLabel>
 				</g:HTMLPanel>
 			</g:HTMLPanel>
 	   </g:HTMLPanel>
